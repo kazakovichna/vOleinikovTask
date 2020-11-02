@@ -6,7 +6,7 @@
           <a href="#" @click.prevent="$emit('hideSidebar')">
             <i class="material-icons black-text">dehaze</i>
           </a>
-          <span class="black-text">{{date}}</span>
+          <span class="black-text"><b>{{date | date('datetime')}}</b></span>
         </div>
 
         <ul class="right hide-on-small-and-down">
