@@ -17,7 +17,7 @@
               data-target="dropdown"
               ref="dropdown"
             >
-              USER NAME
+              {{name}}
               <i class="material-icons right">arrow_drop_down</i>
             </a>
 
@@ -29,7 +29,7 @@
               </li>
               <li class="divider" tabindex="-1"></li>
               <li>
-                <a class="black-text" @click.prevent="logout">
+                <a class="black-text" @click.prevent="signout">
                   <i class="material-icons">assignment_return</i>Выйти
                 </a>
               </li>
@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Navbar',
   data () {
@@ -51,9 +53,17 @@ export default {
       dropdown: null
     }
   },
+  computed: {
+    name () {
+      return this.$store.getters.info.name
+    }
+  },
   methods: {
-    logout () {
-      console.log('logout')
+    ...mapActions([
+      'logout'
+    ]),
+    async signout () {
+      await this.logout()
       this.$router.push('/login?message=logout')
     }
   },
