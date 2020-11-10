@@ -25,6 +25,8 @@
 <script>
 import Navbar from '@/components/app/Navbar'
 import Sidebar from '@/components/app/Sidebar'
+import { mapGetters } from 'vuex'
+import messages from '@/common/messages'
 
 export default {
   name: 'MainLayout',
@@ -43,6 +45,19 @@ export default {
       await this.$store.dispatch('fetchInfo')
     }
     this.loading = false
+  },
+  computed: {
+    ...mapGetters([
+      'error'
+    ]),
+    errors () {
+      return this.error
+    }
+  },
+  watch: {
+    errors (fbError) {
+      this.$error(messages[fbError.code] || 'Something went wrong')
+    }
   }
 }
 </script>
