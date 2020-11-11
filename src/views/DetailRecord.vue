@@ -4,9 +4,9 @@
 
     <div v-else-if="record">
       <div class="breadcrumb-wrap">
-        <router-link to="/history" class="breadcrumb">История</router-link>
+        <router-link to="/history" class="breadcrumb">{{ 'Detail_History' | localize}}</router-link>
         <a @click.prevent class="breadcrumb">
-          {{ record.type === 'income' ? 'Доход' : 'Расход' }}
+          {{ record.type === 'income' ? 'Detail_Income' : 'Detail_Outcome' | localize  }}
         </a>
       </div>
       <div class="row">
@@ -16,9 +16,9 @@
             'green': record.type === 'income'
           }">
             <div class="card-content white-text">
-              <p>Описание: {{record.description}}</p>
-              <p>Сумма: {{record.amount | currency('RUB')}}</p>
-              <p>Категория: {{record.categoryName}}</p>
+              <p>{{ 'Detail_Description' | localize }}: {{record.description}}</p>
+              <p>{{ 'Detail_Amount' | localize }}: {{record.amount | currency('RUB')}}</p>
+              <p>{{ 'Detail_Category' | localize }}: {{record.categoryName}}</p>
               <small>{{record.date | date('datetime')}}</small>
             </div>
           </div>
@@ -32,6 +32,11 @@
 
 <script>
 export default {
+  metaInfo() {
+    return {
+      title: this.$title('Detail_Title')
+    }
+  },
   name: 'DetailRecord',
   data: () => ({
     record: null,
@@ -44,7 +49,7 @@ export default {
 
     this.record = {
       ...record,
-      categoryName: category.title
+      categoryName: category.title,
     }
 
     this.loading = false

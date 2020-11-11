@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Редактировать</h4>
+        <h4>{{ 'Category_Edit_Name' | localize }}</h4>
       </div>
 
       <form @submit.prevent="submitHandler">
@@ -14,7 +14,7 @@
               :value="c.id"
             >{{c.title}}</option>
           </select>
-          <label>Выберите категорию</label>
+          <label>{{ 'Category_Edit_Choose' | localize }}</label>
         </div>
 
         <div class="input-field">
@@ -24,12 +24,12 @@
             v-model="title"
             :class="{invalid: $v.title.$dirty && !$v.title.required}"
           >
-          <label for="name">Название</label>
+          <label for="name">{{ 'Category_Edit_Cho_Name' | localize }}</label>
           <span
             v-if="$v.title.$dirty && !$v.title.required"
             class="helper-text invalid"
           >
-            Введите название категории
+            {{ 'Category_Edit_Name_Er' | localize }}
           </span>
         </div>
 
@@ -40,17 +40,17 @@
             v-model.number="limit"
             :class="{invalid: $v.limit.$dirty && !$v.limit.minValue}"
           >
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ 'Category_Edit_Limit' | localize }}</label>
           <span
             v-if="$v.limit.$dirty && !$v.limit.minValue"
             class="helper-text invalid"
           >
-            Минимальная значение {{$v.limit.$params.minValue.min}}
+            {{ 'Category_Edit_Limit_Er' | localize }} {{$v.limit.$params.minValue.min}}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Обновить
+          {{ 'Category_Edit_Btn' | localize }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -60,6 +60,7 @@
 
 <script>
 import {required, minValue} from 'vuelidate/lib/validators'
+import localizeFilter from '@/filters/localize.filter'
 
 export default {
   props: {
@@ -105,7 +106,7 @@ export default {
           limit: this.limit
         }
         await this.$store.dispatch('updateCategory', categoryData)
-        this.$message('Категория упешно обновлена')
+        this.$message(localizeFilter('Category_Edit_Message'))
         this.$emit('updated', categoryData)
       } catch (e) {}
     }

@@ -3,7 +3,7 @@
     <div class="col s12 m6">
       <div>
         <div class="page-subtitle">
-          <h4>Создать</h4>
+          <h4>{{ 'Category_Create' | localize }}</h4>
         </div>
 
         <form @submit.prevent="submitHandler">
@@ -14,10 +14,10 @@
               v-model="title"
               :class="{invalid: $v.title.$dirty && !$v.title.required}"
             >
-            <label for="name">Название</label>
+            <label for="name">{{ 'Category_Create_Name' | localize }}</label>
             <span class="helper-text invalid"
                   v-if="$v.title.$dirty && !$v.title.required"
-            >Введите название категории</span>
+            >{{ 'Category_Create_Name_Er' | localize }}</span>
           </div>
 
           <div class="input-field">
@@ -27,14 +27,14 @@
               v-model.number="limit"
               :class="{invalid: $v.limit.$dirty && !$v.limit.minValue}"
             >
-            <label for="limit">Лимит</label>
+            <label for="limit">{{ 'Category_Create_Limit' | localize }}</label>
             <span class="helper-text invalid"
                   v-if="$v.limit.$dirty && !$v.limit.minValue"
-            >Минимальная величина должна быть больше {{$v.limit.$params.minValue.min}}</span>
+            >{{ 'Category_Create_Limit_Er' | localize }} {{$v.limit.$params.minValue.min}}</span>
           </div>
 
           <button class="btn waves-effect waves-light" type="submit">
-            Создать
+            {{ 'Category_Create' | localize }}
             <i class="material-icons right">send</i>
           </button>
         </form>
@@ -45,7 +45,7 @@
 
 <script>
 import { required, minValue } from 'vuelidate/lib/validators'
-import category from '@/store/category'
+import localizeFilter from '@/filters/localize.filter'
 
 export default {
   name: "CategoryCreate",
@@ -78,7 +78,7 @@ export default {
         this.title = ''
         this.limit = 100
         this.$v.$reset()
-        this.$message('Категория была создана')
+        this.$message(localizeFilter('Category_Create_Message'))
         this.$emit('created', category)
       } catch (e) {}
     }

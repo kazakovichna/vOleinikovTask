@@ -3,7 +3,7 @@
     <loader v-if="loading"/>
     <div class="app-main-layout" v-else>
       <Navbar @hideSidebar="isOpen = !isOpen"/>
-      <Sidebar v-model="isOpen" />
+      <Sidebar v-model="isOpen" :key="locale"/>
       <main class="app-content" :class="{full: !isOpen}">
         <div class="app-page">
           <router-view />
@@ -52,9 +52,14 @@ export default {
     ]),
     errors () {
       return this.error
+    },
+    locale () {
+      return this.$store.getters.info.locale
     }
   },
   watch: {
+/*    locale () {
+    },*/
     errors (fbError) {
       this.$error(messages[fbError.code] || 'Something went wrong')
     }

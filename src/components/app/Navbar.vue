@@ -24,13 +24,13 @@
             <ul id='dropdown' class='dropdown-content'>
               <li>
                 <router-link class="black-text" to="/profile">
-                  <i class="material-icons">account_circle</i>Профиль
+                  <i class="material-icons">account_circle</i>{{ 'Profile_button' | localize}}
                 </router-link>
               </li>
               <li class="divider" tabindex="-1"></li>
               <li>
                 <a class="black-text" @click.prevent="signout">
-                  <i class="material-icons">assignment_return</i>Выйти
+                  <i class="material-icons">assignment_return</i>{{ 'Logout' | localize }}
                 </a>
               </li>
             </ul>

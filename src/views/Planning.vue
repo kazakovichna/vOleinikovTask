@@ -3,13 +3,16 @@
     <div class="app-page">
       <div>
         <div class="page-title">
-          <h3>Планирование</h3>
+          <h3>{{ 'Planing_Name' | localize}}</h3>
           <h4>{{info.bill | currency('RUB')}}</h4>
         </div>
 
         <Loader v-if="loading"/>
 
-        <p class="center" v-else-if="!categories.length">Категорий пока нет.<router-link to="/categories">Добавить категорию</router-link></p>
+        <p class="center" v-else-if="!categories.length">
+          {{ 'Planing_Category' }}
+          <router-link to="/categories">{{ 'Planing_Add' | localize }}</router-link>
+        </p>
 
         <section v-else>
           <div v-for="cat in categories"
@@ -17,9 +20,9 @@
           >
             <p>
               <strong>{{cat.title}}:</strong>
-              {{cat.spend | currency('RUB')}} из {{cat.limit | currency('RUB')}}
+              {{cat.spend | currency('RUB')}} {{ 'Planing_Of' | localize }} {{cat.limit | currency('RUB')}}
             </p>
-            <div class="progress" v-tooltip=cat.tooltip>
+            <div class="progress" v-tooltip.noloc=cat.tooltip>
               <div
                 class="determinate"
                 :class="[cat.progressColor]"
@@ -40,6 +43,11 @@ import currencyFilter from '@/filters/currency.filter'
 
 export default {
   name: 'Planning',
+  metaInfo() {
+    return {
+      title: this.$title('Planing_Name')
+    }
+  },
   data: () => ({
     loading: true,
     categories: []
