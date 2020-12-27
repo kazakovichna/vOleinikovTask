@@ -24,40 +24,10 @@ const routes = [
     component: () => import('../views/Register')
   },
   {
-    path: '/categories',
-    name: 'categories',
-    meta: { layout: 'main', auth: true },
-    component: () => import('../views/Categories')
-  },
-  {
-    path: '/detail/:id',
-    name: 'detail',
-    meta: { layout: 'main', auth: true },
-    component: () => import('../views/DetailRecord')
-  },
-  {
-    path: '/history',
-    name: 'history',
-    meta: { layout: 'main', auth: true },
-    component: () => import('../views/History')
-  },
-  {
-    path: '/planning',
-    name: 'planning',
-    meta: { layout: 'main', auth: true },
-    component: () => import('../views/Planning')
-  },
-  {
     path: '/profile',
     name: 'profile',
     meta: { layout: 'main', auth: true },
     component: () => import('../views/Profile')
-  },
-  {
-    path: '/record',
-    name: 'record',
-    meta: { layout: 'main', auth: true },
-    component: () => import('../views/Record')
   }
 ]
 

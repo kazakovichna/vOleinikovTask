@@ -2,9 +2,9 @@
   <div class="main-layout">
     <loader v-if="loading"/>
     <div class="app-main-layout" v-else>
-      <Navbar @hideSidebar="isOpen = !isOpen"/>
-      <Sidebar v-model="isOpen" :key="locale"/>
-      <main class="app-content" :class="{full: !isOpen}">
+      <Navbar />
+      <!--<Sidebar v-model="isOpen" :key="locale"/>-->
+      <main class="app-content" :class="{full: isOpen}">
         <div class="app-page">
           <router-view />
         </div>

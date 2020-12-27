@@ -3,9 +3,9 @@
     <nav class="navbar orange lighten-1">
       <div class="nav-wrapper">
         <div class="navbar-left">
-          <a href="#" @click.prevent="$emit('hideSidebar')">
+          <router-link href="#" to="/">
             <i class="material-icons black-text">dehaze</i>
-          </a>
+          </router-link>
           <span class="black-text"><b>{{date | date('datetime')}}</b></span>
         </div>
 
