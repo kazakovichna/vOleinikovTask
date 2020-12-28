@@ -4,18 +4,28 @@
       <button @click="printBoards">
         Click
       </button>
-      <!--<div class="boards">
+      <div class="boards">
         <div class="boards-create"
-             v-if="boards === []"
+             v-if="!boardsList.length"
         >
           No boards
         </div>
-        <div class="boards-item"
+        <div class="boards-items"
              v-else
         >
-          Hello
+          <div class="boards-item"
+               v-for="item in boardsList"
+               :key="item"
+          >
+            <div class="boards-item-name">
+              {{ item }}
+            </div>
+            <div class="boards-item-id">
+              id: {{ boards[item].id }}
+            </div>
+          </div>
         </div>
-      </div>-->
+      </div>
     </div>
   </div>
 </template>
@@ -38,17 +48,47 @@ export default {
   },
   methods: {
     printBoards() {
-      console.log( this.boardsList )
+      // console.log( Object.keys(this.boards.board1) )
     }
   },
   async mounted () {
     await this.$store.dispatch('fetchBoards')
     this.boards = this.$store.getters.board
 
-    // for ( let i =  ) {}
-
-    // this.boardsList = Object.keys(this.boards)
+    this.boardsList = Object.keys(this.boards)
     this.loading = false
+
   }
 }
 </script>
+
+<style scoped>
+.boards {
+  margin-top: 20px;
+  border-color: #323232;
+  border-style: solid;
+  border-width: 1px;
+
+  width: inherit;
+}
+.boards-items {
+  width: inherit;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.boards-item {
+  width: 600px;
+  margin: 20px;
+  border-color: #2e7d32;
+  border-style: solid;
+  border-width: 1px;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.boards-item-name {
+
+}
+</style>
