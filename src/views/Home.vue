@@ -4,6 +4,18 @@
       <button @click="printBoards">
         Click
       </button>
+      <!--<div class="boards">
+        <div class="boards-create"
+             v-if="boards === []"
+        >
+          No boards
+        </div>
+        <div class="boards-item"
+             v-else
+        >
+          Hello
+        </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -20,16 +32,22 @@ export default {
   data () {
     return {
       loading: true,
-      currency: null
+      boards: null,
+      boardsList: []
     }
   },
   methods: {
     printBoards() {
-      console.log( this.$store.getters.board )
+      console.log( this.boardsList )
     }
   },
   async mounted () {
-    this.currency = await this.$store.dispatch('fetchBoards')
+    await this.$store.dispatch('fetchBoards')
+    this.boards = this.$store.getters.board
+
+    // for ( let i =  ) {}
+
+    // this.boardsList = Object.keys(this.boards)
     this.loading = false
   }
 }

@@ -12,8 +12,8 @@ export default {
   actions: {
     async fetchBoards({ dispatch, commit }) {
       try {
-        const uid = await dispatch('getUid')
-        const userBoardsList = (await firebase.database().ref(`users/${uid}/boards`).once('value')).val()
+        // const uid = await dispatch('getUid')
+        const userBoardsList = (await firebase.database().ref(`boards`).once('value')).val()
         commit('setBoards', userBoardsList)
       }
       catch (e) {
