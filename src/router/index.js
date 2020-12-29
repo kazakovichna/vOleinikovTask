@@ -12,6 +12,12 @@ const routes = [
     component: () => import('../views/Home')
   },
   {
+    path: '/createBoard',
+    name: 'createBoard',
+    meta: { layout: 'main', auth: true },
+    component: () => import('../views/CreateBoard')
+  },
+  {
     path: '/login',
     name: 'login',
     meta: { layout: 'empty' },
