@@ -7,7 +7,6 @@
                type="text"
                placeholder="Input name"
                v-model.trim="name"
-               :class="{invalid: $v.name.$dirty || $v.name.required }"
         >
         <!--<label for="name"></label>-->
       </div>
@@ -29,6 +28,7 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
+import { mapActions } from 'vuex'
 
 export default {
   name: "CreateBoard",
@@ -45,16 +45,24 @@ export default {
     }
   },
   methods: {
-    submitHandler () {
+    ...mapActions([
+      'createBoard'
+    ]),
+    async submitHandler () {
       if (this.$v.$invalid) {
         this.$v.$touch()
         return
       }
-      const formData = {
-        email: this.email,
-        password: this.password
+
+      try {
+        await this.createBoard({
+            name: this.name,
+            description: this.description
+        })
+        this.name = ''
+        this.description = ''
       }
-      console.log( formData )
+      catch (e) {}
     }
   }
 }

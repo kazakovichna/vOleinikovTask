@@ -10,7 +10,7 @@ export default {
     }
   },
   actions: {
-    async fetchBoards({ dispatch, commit }) {
+    async fetchBoards({  commit }) {
       try {
         // const uid = await dispatch('getUid')
         const userBoardsList = (await firebase.database().ref(`boards`).once('value')).val()
@@ -18,6 +18,15 @@ export default {
       }
       catch (e) {
         console.log(e)
+        throw e
+      }
+    },
+    async createBoard({ commit, dispatch }, { name, description }) {
+      try {
+        await firebase.database().ref(`/boards`).push({name, description})
+      }
+      catch (e) {
+        commit('setError', e)
         throw e
       }
     }
