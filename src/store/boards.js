@@ -2,22 +2,34 @@ import firebase from 'firebase'
 
 export default {
   state: {
-    boards: {}
+    boards: {},
+    currentBoard: {}
   },
   mutations: {
     setBoards ( state, boards ) {
       state.boards = boards
+    },
+    setCurrentBoard ( state, board ) {
+      state.currentBoard = board
     }
   },
   actions: {
-    async fetchBoards({  commit }) {
+    async fetchBoards({ commit }) {
       try {
-        // const uid = await dispatch('getUid')
         const userBoardsList = (await firebase.database().ref(`boards`).once('value')).val()
         commit('setBoards', userBoardsList)
       }
       catch (e) {
         console.log(e)
+        throw e
+      }
+    },
+    async fetchBoardsById ({ commit }, id) {
+      try {
+        const currentBoard = (await firebase.database().ref(`boards/${id}`).once('value')).val()
+        commit('setCurrentBoard', currentBoard)
+      } catch (e) {
+        commit('setError', e)
         throw e
       }
     },
@@ -32,6 +44,7 @@ export default {
     }
   },
   getters: {
-    board: s => s.boards
+    board: s => s.boards,
+    getCurrentBoard: s => s.currentBoard
   }
 }

@@ -18,6 +18,12 @@ const routes = [
     component: () => import('../views/CreateBoard')
   },
   {
+    path: '/currentBoard/:id',
+    name: 'currentBoard',
+    meta: { layout: 'main', auth: true },
+    component: () => import('../views/CurrentBoard')
+  },
+  {
     path: '/login',
     name: 'login',
     meta: { layout: 'empty' },

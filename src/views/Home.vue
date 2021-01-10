@@ -17,11 +17,16 @@
                v-for="item in boardsList"
                :key="item"
           >
-            <div class="boards-item-name">
-              {{ item }}
-            </div>
-            <div class="boards-item-id">
-              id: {{ boards[item].id }}
+            <div
+              @click="$router.push('/currentBoard/' + item)"
+              class="board-wrapper"
+            >
+              <div class="boards-item-name">
+                {{ boards[item].name }}
+              </div>
+              <div class="boards-item-id">
+                id: {{ boards[item].description }}
+              </div>
             </div>
           </div>
         </div>
@@ -80,7 +85,7 @@ export default {
 .boards-item {
   width: 600px;
   margin: 20px;
-  border-color: #2e7d32;
+  border-color: red;
   border-style: solid;
   border-width: 1px;
 
