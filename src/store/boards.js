@@ -27,6 +27,7 @@ export default {
     async fetchBoardsById ({ commit }, id) {
       try {
         const currentBoard = (await firebase.database().ref(`boards/${id}`).once('value')).val()
+
         commit('setCurrentBoard', currentBoard)
       } catch (e) {
         commit('setError', e)
@@ -38,6 +39,14 @@ export default {
         await firebase.database().ref(`/boards`).push({name, description})
       }
       catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    async createColumn({ commit, dispatch }, { name, boardId } ) {
+      try {
+        await firebase.database().ref(`/boards/${boardId}/columns`).push({ name })
+      } catch (e) {
         commit('setError', e)
         throw e
       }
