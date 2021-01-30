@@ -11,6 +11,9 @@ export default {
     },
     setCurrentBoard ( state, board ) {
       state.currentBoard = board
+    },
+    sutPinsToCurrentBoard ( state, { col, index } ) {
+      Object.values(state.currentBoard.columns)[index].pins = col.pins
     }
   },
   actions: {
@@ -27,7 +30,6 @@ export default {
     async fetchBoardsById ({ commit }, id) {
       try {
         const currentBoard = (await firebase.database().ref(`boards/${id}`).once('value')).val()
-
         commit('setCurrentBoard', currentBoard)
       } catch (e) {
         commit('setError', e)
@@ -46,6 +48,23 @@ export default {
     async createColumn({ commit, dispatch }, { name, boardId } ) {
       try {
         await firebase.database().ref(`/boards/${boardId}/columns`).push({ name })
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    async createPinAct({ commit }, { boardId, board, index, data }) {
+      try {
+        await firebase.database().ref(`/boards/${boardId}/columns/${Object.keys(board.columns)[index]}/pins`).push(data)
+
+        const currentCol = (await firebase.database().ref(`/boards/${boardId}/columns/${Object.keys(board.columns)[index]}`).once('value')).val()
+
+        const pinInfo = {
+          col: currentCol,
+          index: index
+        }
+
+        commit('sutPinsToCurrentBoard', pinInfo)
       } catch (e) {
         commit('setError', e)
         throw e

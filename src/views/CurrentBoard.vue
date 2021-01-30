@@ -4,13 +4,17 @@
     <div class="wrapper"
           v-else
     >
-      <p class="board-name">{{ curBoard.description }}</p>
-      <p class="board-description">{{ curBoard.name }}</p>
+      <div class="board-name">
+        <p>{{ curBoard.name }}</p>
+      </div>
+      <div class="board-description">
+        <p>{{ curBoard.description }}</p>
+      </div>
       <div class="tables-div">
         <div class="none-columns"
              v-if="curBoard.columns === undefined"
         >
-          <div class="create-column-btn"
+          <div class="create-column-btn waves-effect waves-purple"
                v-if="!columnCreator"
                @click="openColumnCreator"
           >
@@ -21,6 +25,7 @@
           >
             <form @submit.prevent="createColumnMet">
               <input type="text"
+                     class="new-column-input"
                      placeholder="Input column's name"
                      v-model.trim="columnName"
                      :class="{invalid: $v.columnName.$dirty && !$v.columnName.required }"
@@ -37,39 +42,57 @@
             </form>
           </div>
         </div>
+
+
         <div class="columns"
              v-else
         >
           <div class="column"
                v-for="item in Object.values(curBoard.columns)"
-               :key="item"
+               :key="item.name"
           >
             <div class="name">
               {{ item.name }}
             </div>
-            <div class="list">
-              <div class="list-item">
-
+            <!--<loader />-->
+            <div class="list"
+                 v-if="item.pins !== undefined"
+            >
+              <div class="list-item"
+                   v-for="itm in Object.values(item.pins)"
+                   :key="itm"
+              >
+                {{ itm }}
               </div>
             </div>
             <div
               class="pin-creator"
+              style="font-size: 26px; cursor: pointer"
               @click="pinCreator = true"
               v-if="pinCreator === false"
             >
-              Create pin
+              +
             </div>
-            <div class="pin-creator-form">
-              <input type="text"
-                     placeholder="Input pin name"
-                     v-model="pinName"
+            <div class="pin-creator-input-div"
+                 v-else
+            >
+              <textarea type="text" placeholder="Text here"
+                     class="pin-creator-input"
+                        v-model="pinNew[Object.values(curBoard.columns).indexOf(item)]"
+              ></textarea>
+              <div class="pin-creator-input-btn waves-orange waves-effect"
+                   @click="createPin(item)"
               >
-              <button
-                @click="createPin()"
-              >
-                <span>Create</span>
-              </button>
+                Create
+              </div>
             </div>
+          </div>
+
+
+          <div class="add-column waves-effect waves-orange"
+               @click="addColumn()"
+          >
+            <p>+</p>
           </div>
         </div>
       </div>
@@ -89,6 +112,8 @@ export default {
     loading: true,
     columnCreator: false,
     pinCreator: false,
+    pinNew: [],
+    pinLoading: [],
     pinName: null,
     columnName: ''
   }),
@@ -105,8 +130,13 @@ export default {
   methods: {
     ...mapActions([
       'fetchBoardsById',
-      'createColumn'
+      'createColumn',
+      'createPinAct',
+      'fetchPins'
     ]),
+    addColumn() {
+      console.log()
+    },
     openColumnCreator() {
       this.columnCreator = true
     },
@@ -127,14 +157,37 @@ export default {
         this.columnCreator = false
       } catch (e) {}
     },
-    createPin() {
-      0
+    async createPin(curCol) {
+      const index = Object.values(this.curBoard.columns).indexOf(curCol)
+
+      const pinForm = {
+        boardId: this.$route.params.id,
+        board: this.curBoard,
+        index: index,
+        data: this.pinNew[index]
+      }
+
+
+      await this.createPinAct(pinForm)
+
+      // this.curBoard = this.getCurrentBoard
+      // this.pinLoading[index] = false
+
+      this.pinNew[index] = ''
+      this.pinCreator = false
     }
   },
   async mounted () {
     try {
       await this.fetchBoardsById(this.$route.params.id)
       this.curBoard = this.getCurrentBoard
+      this.pinNew.length = Object.keys(this.curBoard.columns).length
+      this.pinLoading.length = this.pinNew.length
+
+      for (let item = 0; item < this.pinNew.length; item++) {
+        this.pinNew[item] = ''
+        this.pinLoading[item] = false
+      }
 
       this.loading = false
     } catch (e) {}
@@ -143,5 +196,142 @@ export default {
 </script>
 
 <style scoped>
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .board-name {
+    width: 30%;
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: #ffa726;
 
+    display: flex;
+    align-items: center;
+  }
+  .board-name p {
+    margin-left: 24px;
+    font-family: "Lucida Console", sans-serif;
+    font-size: 20px;
+  }
+  .board-description {
+    height: 35px;
+    margin-top: 10px;
+    width: 30%;
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: #ffa726;
+
+    display: flex;
+    align-items: center;
+  }
+  .board-description p {
+    margin-left: 24px;
+    font-family: "Lucida Console", sans-serif;
+    font-size: 16px;
+  }
+  .none-columns {
+    margin-top: 20px;
+    padding-top: 20px;
+    height: 400px;
+    width: 100%;
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: #ffa726;
+
+    font-family: "Lucida Console", sans-serif;
+    font-size: 16px;
+  }
+  .create-column-btn {
+    width: 220px;
+    cursor: pointer;
+
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: aliceblue;
+    margin-left: 20px;
+  }
+  .create-column-btn p {
+    margin-left: 12px;
+  }
+  .create-column-form form {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .create-column-form form button {
+    width: 200px;
+  }
+  .new-column-input {
+    color: white;
+    width: 220px !important;
+
+    font-family: "Lucida Console", sans-serif;
+    font-size: 16px;
+  }
+  .columns {
+    margin-top: 20px;
+    padding-top: 20px;
+    height: 400px;
+    width: 100%;
+
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: #ffa726;
+
+    font-family: "Lucida Console", sans-serif;
+    font-size: 16px;
+
+    display: flex;
+    flex-direction: row;
+  }
+  .column {
+    width: 170px;
+    padding-top: 10px;
+    padding-left: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+    height: 90%;
+
+    box-shadow: 0 0 4px #5a5a5a;
+    border-radius: 2px;
+    background-color: aliceblue;
+  }
+  .add-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: white;
+    border-radius: 360px;
+    height: 36px;
+    font-size: 26px;
+
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+  .name {
+    padding-left: 10px;
+    width: 150px;
+    box-shadow: 0 0 2px #5a5a5a;
+    border-radius: 2px;
+    background-color: #ffa726;
+  }
+  .pin-creator-input-div {
+    width: 150px;
+  }
+  .pin-creator-input {
+    margin-top: 10px;
+    width: 150px !important;
+  }
+  .pin-creator-input-btn {
+    box-shadow: 0 0 1px #5a5a5a;
+    background-color: #c6ced5;
+    text-align: center;
+    width: 150px;
+    height: 25px;
+    outline: none;
+    border: none;
+  }
 </style>
