@@ -44,7 +44,7 @@
         </div>-->
 
 
-        <div class="columns">
+        <!--<div class="columns">
           <div class="column"
                v-for="item in Object.values(curBoard.columns)"
                :key="item.name"
@@ -52,7 +52,7 @@
             <div class="name">
               {{ item.name }}
             </div>
-            <!--<loader />-->
+            &lt;!&ndash;<loader />&ndash;&gt;
             <div class="list"
                  v-if="item.pins !== undefined"
             >
@@ -97,7 +97,109 @@
               </button>
             </form>
           </div>
+        </div>-->
+
+        <div class="row">
+          <div class="col-3 form-inline">
+            <b-form-input
+              v-model="newTask"
+              placeholder="Enter Task"
+              @keyup.enter="add"
+            >
+            </b-form-input>
+            <b-button
+              @click="add"
+              variant="primary"
+              class="ml-3"
+            >
+              Add
+            </b-button>
+          </div>
         </div>
+
+        <div class="row mt-5">
+
+          <div class="col-3">
+            <div class="p-2 alert alert-secondary">
+              <h3>Back Log</h3>
+              <draggable
+                class="list-group kanban-column"
+                :list="arrBackLog"
+                group="tasks"
+              >
+                <div class="list-group-item"
+                     v-for="element in arrBackLog"
+                     :key="element.name"
+                >
+                  {{ element.name }}
+                </div>
+              </draggable>
+            </div>
+          </div>
+
+
+          <div class="col-3">
+            <div class="p-2 alert alert-primary">
+              <h3>In Progress</h3>
+              <draggable
+                class="list-group kanban-column"
+                :list="arrInProgress"
+                group="tasks"
+              >
+                <div
+                  class="list-group-item"
+                  v-for="element in arrInProgress"
+                  :key="element.name"
+                >
+                  {{ element.name }}
+                </div>
+              </draggable>
+            </div>
+          </div>
+
+
+          <div class="col-3">
+            <div class="p-2 alert alert-warning">
+              <h3>Testing</h3>
+              <draggable
+                class="list-group kanban-column"
+                :list="arrTested"
+                group="tasks"
+              >
+                <div
+                  class="list-group-item"
+                  v-for="element in arrTested"
+                  :key="element.name"
+                >
+                  {{ element.name }}
+                </div>
+              </draggable>
+            </div>
+          </div>
+
+
+          <div class="col-3">
+            <div class="p-2 alert alert-success">
+              <h3>Done</h3>
+              <draggable
+                class="list-group kanban-column"
+                :list="arrDone"
+                group="tasks"
+              >
+                <div
+                  class="list-group-item"
+                  v-for="element in arrDone"
+                  :key="element.name"
+                >
+                  {{ element.name }}
+                </div>
+              </draggable>
+            </div>
+          </div>
+
+        </div>
+
+
       </div>
     </div>
   </div>
@@ -106,10 +208,25 @@
 <script>
 import  { mapActions, mapGetters } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
+import draggable from 'vuedraggable'
 
 export default {
   name: "CurrentBoard",
+  components: {
+    draggable
+  },
   data: () => ({
+    newTask: '',
+    arrBackLog: [
+      { name: 'to DO' },
+      { name: 'in Progress' },
+      { name: 'to DO' },
+      { name: 'to DO' }
+    ],
+    arrInProgress: [],
+    arrTested: [],
+    arrDone: [],
+
     curBoard: {},
     curColumnsMas: [],
     loading: true,
@@ -138,6 +255,11 @@ export default {
       'createColumn',
       'createPinAct'
     ]),
+    add: function() {
+      if (this.newTask) {
+        this.arrBackLog.push({ name: this.newTask })
+      }
+    },
     /*openPinCreator(item) {
       this.pinIndex = Object.values(this.curBoard.columns).indexOf(item)
 
@@ -210,6 +332,9 @@ export default {
 </script>
 
 <style scoped>
+  .kanban-column {
+    min-height: 300px;
+  }
   .wrapper {
     display: flex;
     flex-direction: column;
