@@ -134,15 +134,16 @@
             <div class="p-2 alert alert-success">
               <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
               <draggable
+                v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
                 class="list-group kanban-column"
                 :list="allColumnsArr[item]"
                 group="tasks"
               >
                 <div class="list-group-item"
                      v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
-                     :key="element"
+                     :key="element.id"
                 >
-                  {{ element }}
+                  {{ element.name }}
                 </div>
               </draggable>
             </div>
@@ -202,7 +203,6 @@ export default {
         this.allColumnsArr[0].push(this.newTask)
         console.log(this.allColumnsArr[0])
         this.newTask = ''
-        return
       }
     },
     showAllMas() {
