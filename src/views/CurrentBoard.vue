@@ -119,83 +119,28 @@
 
         <div class="row mt-5">
 
-          <div class="col-3">
+
+          <div class="col-3"
+               v-for="item in allColumnsArr"
+               :key="allColumnsArr.indexOf(item)"
+          >
             <div class="p-2 alert alert-secondary">
-              <h3>Back Log</h3>
+              <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
               <draggable
                 class="list-group kanban-column"
-                :list="arrBackLog"
+                :list="allColumnsArr[item]"
                 group="tasks"
               >
                 <div class="list-group-item"
-                     v-for="element in arrBackLog"
-                     :key="element.name"
+                     v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
+                     :key="allColumnsArr.indexOf(element)"
                 >
-                  {{ element.name }}
+                  {{ element }}
                 </div>
               </draggable>
             </div>
           </div>
 
-
-          <div class="col-3">
-            <div class="p-2 alert alert-primary">
-              <h3>In Progress</h3>
-              <draggable
-                class="list-group kanban-column"
-                :list="arrInProgress"
-                group="tasks"
-              >
-                <div
-                  class="list-group-item"
-                  v-for="element in arrInProgress"
-                  :key="element.name"
-                >
-                  {{ element.name }}
-                </div>
-              </draggable>
-            </div>
-          </div>
-
-
-          <div class="col-3">
-            <div class="p-2 alert alert-warning">
-              <h3>Testing</h3>
-              <draggable
-                class="list-group kanban-column"
-                :list="arrTested"
-                group="tasks"
-              >
-                <div
-                  class="list-group-item"
-                  v-for="element in arrTested"
-                  :key="element.name"
-                >
-                  {{ element.name }}
-                </div>
-              </draggable>
-            </div>
-          </div>
-
-
-          <div class="col-3">
-            <div class="p-2 alert alert-success">
-              <h3>Done</h3>
-              <draggable
-                class="list-group kanban-column"
-                :list="arrDone"
-                group="tasks"
-              >
-                <div
-                  class="list-group-item"
-                  v-for="element in arrDone"
-                  :key="element.name"
-                >
-                  {{ element.name }}
-                </div>
-              </draggable>
-            </div>
-          </div>
 
         </div>
 
@@ -217,15 +162,18 @@ export default {
   },
   data: () => ({
     newTask: '',
-    arrBackLog: [
-      { name: 'to DO' },
+   /* arrBackLog: [
+      { name: 'to D' },
       { name: 'in Progress' },
-      { name: 'to DO' },
-      { name: 'to DO' }
+      { name: 'to O' },
+      { name: 't DO' }
     ],
     arrInProgress: [],
-    arrTested: [],
+    arrTested: [],*/
     arrDone: [],
+
+    allColumnsArrName: [],
+    allColumnsArr: [],
 
     curBoard: {},
     curColumnsMas: [],
@@ -255,18 +203,16 @@ export default {
       'createColumn',
       'createPinAct'
     ]),
+
+
+    // Add a native mas
     add: function() {
       if (this.newTask) {
         this.arrBackLog.push({ name: this.newTask })
       }
     },
-    /*openPinCreator(item) {
-      this.pinIndex = Object.values(this.curBoard.columns).indexOf(item)
 
-      console.log(this.pinIndex)
-      this.pinCreator[this.pinIndex] = !this.pinCreator[this.pinIndex]
-      console.log(this.pinCreator[this.pinIndex])
-    },*/
+    // Make a new native work-place
     async createColumnMet() {
       if (this.columnName.length === 0) {
         this.columnCreator = false
@@ -284,30 +230,6 @@ export default {
         this.columnCreator = false
         this.columnName = ''
       } catch (e) {}
-    },
-    async createPin(curCol) {
-      const index = Object.values(this.curBoard.columns).indexOf(curCol)
-
-      if ( this.pinNew[index] === '' ) {
-        // this.pinCreator[index] = false
-        return
-      }
-
-      const pinForm = {
-        boardId: this.$route.params.id,
-        board: this.curBoard,
-        index: index,
-        data: this.pinNew[index]
-      }
-
-
-      await this.createPinAct(pinForm)
-
-      // this.curBoard = this.getCurrentBoard
-      // this.pinLoading[index] = false
-
-      this.pinNew[index] = ''
-      // this.pinCreator[index] = false
     }
   },
   async mounted () {
@@ -315,15 +237,20 @@ export default {
       await this.fetchBoardsById(this.$route.params.id)
       this.curBoard = this.getCurrentBoard
 
-      if (this.curBoard.columns !== undefined) {
-        this.pinNew.length = Object.keys(this.curBoard.columns).length
-        // this.pinCreator.length = this.pinNew.length
+      this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
+      this.allColumnsArrName.length = this.allColumnsArr.length
 
-        for (let item = 0; item < this.pinNew.length; item++) {
-          this.pinNew[item] = ''
-          // this.pinCreator[item] = false
+      if (this.curBoard.columns !== undefined) {
+        for ( let item = 0; item < Object.keys(this.curBoard.columns).length; item++ ) {
+          this.allColumnsArr[item] = []
+          this.allColumnsArr[item] = Object.values(Object.values(this.curBoard.columns)[item].pins)
+          this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
         }
+        console.log(this.allColumnsArr[0])
+        // console.log(this.allColumnsArrName)
       }
+
+      // this.allColumnsArr = Object.values(Object.values(this.curBoard.columns)[0].pins)
 
       this.loading = false
     } catch (e) {}
