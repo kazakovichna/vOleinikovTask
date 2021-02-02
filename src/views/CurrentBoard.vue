@@ -99,7 +99,9 @@
           </div>
         </div>-->
 
-        <div class="row">
+        <div class="row"
+             style="margin-top: 20px"
+        >
           <div class="col-3 form-inline">
             <b-form-input
               v-model="newTask"
@@ -200,7 +202,10 @@ export default {
     // Add a native mas
     add() {
       if (this.newTask) {
-        this.allColumnsArr[0].push(this.newTask)
+        this.allColumnsArr[0].push({
+          name: this.newTask,
+          id: `${this.allColumnsArr[0].length}${this.allColumnsArrName[0]}`
+        })
         console.log(this.allColumnsArr[0])
         this.newTask = ''
       }
