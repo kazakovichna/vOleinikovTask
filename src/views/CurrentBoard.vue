@@ -115,16 +115,23 @@
               Add
             </b-button>
           </div>
+          <div class="col-3 btn">
+            <button
+              class="ml-3"
+              @click="showAllMas()"
+            >
+              Apply Changes
+            </button>
+          </div>
         </div>
 
         <div class="row mt-5">
-
 
           <div class="col-3"
                v-for="item in allColumnsArr"
                :key="allColumnsArr.indexOf(item)"
           >
-            <div class="p-2 alert alert-secondary">
+            <div class="p-2 alert alert-success">
               <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
               <draggable
                 class="list-group kanban-column"
@@ -133,14 +140,13 @@
               >
                 <div class="list-group-item"
                      v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
-                     :key="allColumnsArr.indexOf(element)"
+                     :key="element"
                 >
                   {{ element }}
                 </div>
               </draggable>
             </div>
           </div>
-
 
         </div>
 
@@ -162,29 +168,14 @@ export default {
   },
   data: () => ({
     newTask: '',
-   /* arrBackLog: [
-      { name: 'to D' },
-      { name: 'in Progress' },
-      { name: 'to O' },
-      { name: 't DO' }
-    ],
-    arrInProgress: [],
-    arrTested: [],*/
-    arrDone: [],
 
     allColumnsArrName: [],
     allColumnsArr: [],
 
     curBoard: {},
-    curColumnsMas: [],
     loading: true,
     columnCreator: false,
-    pinCreator: [],
-    pinIndex: 0,
-    pinCreatorL: false,
 
-    pinNew: [],
-    pinName: null,
     columnName: ''
   }),
   computed: {
@@ -206,12 +197,17 @@ export default {
 
 
     // Add a native mas
-    add: function() {
+    add() {
       if (this.newTask) {
-        this.arrBackLog.push({ name: this.newTask })
+        this.allColumnsArr[0].push(this.newTask)
+        console.log(this.allColumnsArr[0])
+        this.newTask = ''
+        return
       }
     },
-
+    showAllMas() {
+      console.log(this.allColumnsArr)
+    },
     // Make a new native work-place
     async createColumnMet() {
       if (this.columnName.length === 0) {
