@@ -2,8 +2,8 @@ import firebase from 'firebase'
 
 export default {
   state: {
-    boards: [],
-    boardsList: [],
+    boards: {},
+    boardsList: {},
     currentBoard: {}
   },
   mutations: {
@@ -11,7 +11,7 @@ export default {
       state.boards = boards
     },
     setBoardList ( state, boardsList ) {
-      state.boardsList = boardsList
+      state.boardsList = Object.values(boardsList)
     },
     setCurrentBoard ( state, board ) {
       state.currentBoard = board
@@ -27,6 +27,7 @@ export default {
         for (const item of Object.values(userBoardList)) {
           const userBoard = (await firebase.database().ref(`boards/${item.name}`).once('value')).val()
           userBoards.push(userBoard)
+          console.log(userBoards)
         }
         commit('setBoards', userBoards)
         commit('setBoardList', userBoardList)
@@ -48,6 +49,10 @@ export default {
     async createBoard({ commit, dispatch }, { name, description }) {
       try {
         await firebase.database().ref(`/boards`).push({name, description})
+        const boardIdList = (await firebase.database().ref(`/boards`).once('value')).val()
+        const boardId = Object.keys(boardIdList)[Object.keys(boardIdList).length - 1]
+        const uid = await dispatch('getUid')
+        await firebase.database().ref(`/users/${uid}/boardList`).push({name: boardId})
       }
       catch (e) {
         commit('setError', e)
@@ -57,7 +62,6 @@ export default {
     async applyChangesAct ({ commit, dispatch }, { boardId, columns} ) {
       try {
         await firebase.database().ref(`/boards/${boardId}/columns`).set(columns)
-        console.log('yep')
       } catch (e) {
         throw e
       }
