@@ -2,25 +2,34 @@ import firebase from 'firebase'
 
 export default {
   state: {
-    boards: {},
+    boards: [],
+    boardsList: [],
     currentBoard: {}
   },
   mutations: {
     setBoards ( state, boards ) {
       state.boards = boards
     },
+    setBoardList ( state, boardsList ) {
+      state.boardsList = boardsList
+    },
     setCurrentBoard ( state, board ) {
       state.currentBoard = board
-    },
-    sutPinsToCurrentBoard ( state, { col, index } ) {
-      Object.values(state.currentBoard.columns)[index].pins = col.pins
     }
   },
   actions: {
-    async fetchBoards({ commit }) {
+    async fetchBoards({ commit, dispatch }) {
       try {
-        const userBoardsList = (await firebase.database().ref(`boards`).once('value')).val()
-        commit('setBoards', userBoardsList)
+        const uid = await dispatch('getUid')
+        const userBoardList = (await firebase.database().ref(`users/${uid}/boardList`).once('value')).val()
+
+        let userBoards = []
+        for (const item of Object.values(userBoardList)) {
+          const userBoard = (await firebase.database().ref(`boards/${item.name}`).once('value')).val()
+          userBoards.push(userBoard)
+        }
+        commit('setBoards', userBoards)
+        commit('setBoardList', userBoardList)
       }
       catch (e) {
         console.log(e)
@@ -47,41 +56,16 @@ export default {
     },
     async applyChangesAct ({ commit, dispatch }, { boardId, columns} ) {
       try {
-        // console.log(boardId)
         await firebase.database().ref(`/boards/${boardId}/columns`).set(columns)
         console.log('yep')
       } catch (e) {
-        throw e
-      }
-    },
-    async createColumn({ commit, dispatch }, { name, boardId } ) {
-      try {
-        await firebase.database().ref(`/boards/${boardId}/columns`).push({ name })
-      } catch (e) {
-        commit('setError', e)
-        throw e
-      }
-    },
-    async createPinAct({ commit }, { boardId, board, index, data }) {
-      try {
-        await firebase.database().ref(`/boards/${boardId}/columns/${Object.keys(board.columns)[index]}/pins`).push(data)
-
-        const currentCol = (await firebase.database().ref(`/boards/${boardId}/columns/${Object.keys(board.columns)[index]}`).once('value')).val()
-
-        const pinInfo = {
-          col: currentCol,
-          index: index
-        }
-
-        commit('sutPinsToCurrentBoard', pinInfo)
-      } catch (e) {
-        commit('setError', e)
         throw e
       }
     }
   },
   getters: {
     board: s => s.boards,
+    boardList: s => s.boardsList,
     getCurrentBoard: s => s.currentBoard
   }
 }

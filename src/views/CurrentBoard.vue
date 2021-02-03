@@ -4,126 +4,93 @@
     <div class="wrapper"
          v-else
     >
+
       <div class="board-name">
         <p>{{ curBoard.name }}</p>
       </div>
       <div class="board-description">
         <p>{{ curBoard.description }}</p>
       </div>
+
+
       <div class="tables-div">
-        <div class="none-columns"
-             v-if="curBoard.columns === undefined"
+
+        <div class="row"
+             style="margin-top: 20px"
+             v-if="allColumnsArr.length !== 0"
         >
-          <div class="create-column-btn waves-effect waves-purple"
-               v-if="!columnCreator"
-               @click="openColumnCreator"
-          >
-            <p>There is no columns. Create new one</p>
-          </div>
-          <div class="create-column-form"
-               v-else
-          >
-            <form @submit.prevent="createColumnMet">
-              <input type="text"
-                     class="new-column-input"
-                     placeholder="Input column's name"
-                     v-model.trim="columnName"
-                     :class="{invalid: $v.columnName.$dirty && !$v.columnName.required }"
-              >
-              <small
-                style="color: darkred"
-                v-if=" $v.columnName.$dirty && !$v.columnName.required "
-              >
-                The name is required
-              </small>
-              <button type="submit">
-                Create Column
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="column_wrapper"
-             v-else
-        >
-          <div class="row"
-               style="margin-top: 20px"
-          >
-            <div class="col-3 form-inline">
-              <b-form-input
-                v-model="newTask"
-                placeholder="Enter Task"
-                @keyup.enter="addPin"
-              >
-              </b-form-input>
-              <b-button
-                @click="addPin"
-                variant="primary"
-                class="ml-3"
-              >
-                Add
-              </b-button>
-            </div>
-            <div class="col-3 btn">
-              <button
-                class="ml-3"
-                @click="applyChanges()"
-              >
-                Apply Changes
-              </button>
-            </div>
-          </div>
-
-          <div class="row mt-5">
-
-            <div class="col-3"
-                 v-for="item in allColumnsArr"
-                 :key="allColumnsArr.indexOf(item)"
+          <div class="col-3 form-inline">
+            <b-form-input
+              v-model="newTask"
+              placeholder="Enter Task"
+              @keyup.enter="addPin"
             >
-              <div class="p-2 alert alert-success">
-                <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
-                <draggable
-                  v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
-                  class="list-group kanban-column"
-                  :list="allColumnsArr[item]"
-                  group="tasks"
-                >
-                  <div class="list-group-item"
-                       v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
-                       :key="element.id"
-                  >
-                    {{ element.name }}
-                  </div>
-                </draggable>
-              </div>
-            </div>
-
-            <div class="col-3 add_column">
-              <div class="add_btn waves-effect waves-light"
-                   v-if="columnCreator === false"
-                   @click="columnCreator = true"
-              >
-                <p>+</p>
-              </div>
-              <div class="add_column_input_div"
-                   v-else
-              >
-                <form @submit.prevent="addColumn">
-                  <input class="add_column_input_div"
-                         type="text"
-                         placeholder="Enter column name"
-                         v-model="columnName"
-                  >
-                  <button class="ml-3" type="submit">
-                    Add column
-                  </button>
-                </form>
-              </div>
-            </div>
-
+            </b-form-input>
+            <b-button
+              @click="addPin"
+              variant="primary"
+              class="ml-3"
+            >
+              Add
+            </b-button>
+          </div>
+          <div class="col-3 btn">
+            <button
+              class="ml-3"
+              @click="applyChanges()"
+            >
+              Apply Changes
+            </button>
           </div>
         </div>
 
+        <div class="row mt-5">
+
+          <div class="col-3"
+               v-for="item in allColumnsArr"
+               :key="allColumnsArr.indexOf(item)"
+          >
+            <div class="p-2 alert alert-success">
+              <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
+              <draggable
+                v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
+                class="list-group kanban-column"
+                :list="allColumnsArr[item]"
+                group="tasks"
+              >
+                <div class="list-group-item"
+                     v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
+                     :key="element.id"
+                >
+                  {{ element.name }}
+                </div>
+              </draggable>
+            </div>
+          </div>
+
+          <div class="col-3 add_column">
+            <div class="add_btn waves-effect waves-light"
+                 v-if="columnCreator === false"
+                 @click="columnCreator = true"
+            >
+              <p>+</p>
+            </div>
+            <div class="add_column_input_div"
+                 v-else
+            >
+              <form @submit.prevent="addColumn">
+                <input class="add_column_input_div"
+                       type="text"
+                       placeholder="Enter column name"
+                       v-model="columnName"
+                >
+                <button class="ml-3" type="submit">
+                  Add column
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -169,6 +136,10 @@
 
       // Add a native mas
       addPin () {
+        if (this.allColumnsArr.length === 0) {
+          this.newTask = ''
+          return
+        }
         if (this.newTask) {
           this.allColumnsArr[0].push({
             name: this.newTask,
@@ -215,6 +186,7 @@
       try {
         await this.fetchBoardsById(this.$route.params.id)
         this.curBoard = this.getCurrentBoard
+        console.log(this.$route.params.id)
 
         this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
         this.allColumnsArrName.length = this.allColumnsArr.length
@@ -227,6 +199,9 @@
             }
             this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
           }
+        } else {
+          this.allColumnsArr = []
+          this.allColumnsArrName = []
         }
       } catch (e) {}
       this.loading = false

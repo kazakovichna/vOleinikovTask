@@ -15,6 +15,7 @@
     "lodash": "^4.17.20",
     "materialize-css": "^1.0.0-rc.2",
     "register-service-worker": "^1.7.1",
+    "uuid": "^8.3.2",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.1",
     "vue-meta": "^2.4.0",

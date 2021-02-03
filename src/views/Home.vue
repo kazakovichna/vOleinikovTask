@@ -14,18 +14,18 @@
              v-else
         >
           <div class="boards-item"
-               v-for="item in boardsList"
-               :key="item"
+               v-for="item in Object.values(boards)"
+               :key="Object.values(boards).indexOf(item)"
           >
             <div
-              @click="$router.push('/currentBoard/' + item)"
+              @click="$router.push(`/currentBoard/${boardsList[Object.values(boards).indexOf(item)].name}`)"
               class="board-wrapper"
             >
               <div class="boards-item-name">
-                {{ boards[item].name }}
+                {{ item.name }}
               </div>
               <div class="boards-item-id">
-                id: {{ boards[item].description }}
+                id: {{ item.description }}
               </div>
             </div>
           </div>
@@ -59,8 +59,9 @@ export default {
   async mounted () {
     await this.$store.dispatch('fetchBoards')
     this.boards = this.$store.getters.board
+    this.boardsList = this.$store.getters.boardList
+    console.log(this.boardsList[0].name)
 
-    this.boardsList = Object.keys(this.boards)
     this.loading = false
 
   }
