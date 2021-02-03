@@ -106,11 +106,11 @@
             <b-form-input
               v-model="newTask"
               placeholder="Enter Task"
-              @keyup.enter="add"
+              @keyup.enter="addPin"
             >
             </b-form-input>
             <b-button
-              @click="add"
+              @click="addPin"
               variant="primary"
               class="ml-3"
             >
@@ -120,7 +120,7 @@
           <div class="col-3 btn">
             <button
               class="ml-3"
-              @click="showAllMas()"
+              @click="applyChanges()"
             >
               Apply Changes
             </button>
@@ -148,6 +148,29 @@
                   {{ element.name }}
                 </div>
               </draggable>
+            </div>
+          </div>
+
+          <div class="col-3 add_column">
+            <div class="add_btn waves-effect waves-light"
+                 v-if="columnCreator === false"
+                 @click="columnCreator = true"
+            >
+              <p>+</p>
+            </div>
+            <div class="add_column_input_div"
+                 v-else
+            >
+              <form @submit.prevent="addColumn">
+                <input class="add_column_input_div"
+                       type="text"
+                       placeholder="Enter column name"
+                       v-model="columnName"
+                >
+                <button class="ml-3" type="submit">
+                  Add column
+                </button>
+              </form>
             </div>
           </div>
 
@@ -194,43 +217,52 @@ export default {
   methods: {
     ...mapActions([
       'fetchBoardsById',
-      'createColumn',
-      'createPinAct'
+      'applyChangesAct'
     ]),
 
 
     // Add a native mas
-    add() {
+    addPin() {
       if (this.newTask) {
         this.allColumnsArr[0].push({
           name: this.newTask,
-          id: `${this.allColumnsArr[0].length}${this.allColumnsArrName[0]}`
+          id: Number(`1${this.allColumnsArr[0].length + 1}`)
         })
         console.log(this.allColumnsArr[0])
         this.newTask = ''
       }
     },
-    showAllMas() {
-      console.log(this.allColumnsArr)
-    },
-    // Make a new native work-place
-    async createColumnMet() {
-      if (this.columnName.length === 0) {
-        this.columnCreator = false
-        return
-      }
-      try {
-        const columnForm = {
-          name: this.columnName,
-          boardId: this.$route.params.id
-        }
-        await this.createColumn(columnForm)
-        await this.fetchBoardsById(this.$route.params.id)
-        this.curBoard = this.getCurrentBoard
-
-        this.columnCreator = false
+    addColumn() {
+      if (this.columnName) {
+        this.allColumnsArr.push([])
+        this.allColumnsArrName.push(this.columnName)
         this.columnName = ''
-      } catch (e) {}
+        this.columnCreator = false
+      }
+    },
+    async applyChanges() {
+      this.allColumnsArr.forEach(item => {
+        item.forEach(el => {
+          const itemId = this.allColumnsArr.indexOf(item)
+          el.id = Number(`${itemId + 1}${this.allColumnsArr[itemId].indexOf(el) + 1}`)
+        })
+      })
+
+      const newColumns = []
+      this.allColumnsArr.forEach(item => {
+        const column = {
+          name: this.allColumnsArrName[this.allColumnsArr.indexOf(item)],
+          pins: item
+        }
+        newColumns.push(column)
+      })
+
+      // console.log(this.$route.params.id)
+      const payload = {
+        boardId: this.$route.params.id,
+        columns: newColumns
+      }
+      await this.applyChangesAct( payload )
     }
   },
   async mounted () {
@@ -241,18 +273,16 @@ export default {
       this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
       this.allColumnsArrName.length = this.allColumnsArr.length
 
+
       if (this.curBoard.columns !== undefined) {
         for ( let item = 0; item < Object.keys(this.curBoard.columns).length; item++ ) {
           this.allColumnsArr[item] = []
-          this.allColumnsArr[item] = Object.values(Object.values(this.curBoard.columns)[item].pins)
+          if ( Object.values(this.curBoard.columns)[item].pins !== undefined ) {
+            this.allColumnsArr[item] = Object.values(Object.values(this.curBoard.columns)[item].pins)
+          }
           this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
         }
-        console.log(this.allColumnsArr[0])
-        // console.log(this.allColumnsArrName)
       }
-
-      // this.allColumnsArr = Object.values(Object.values(this.curBoard.columns)[0].pins)
-
       this.loading = false
     } catch (e) {}
   }
@@ -378,57 +408,18 @@ export default {
     color: black;
     opacity: 0.7;
   }
-  .list-item {
-    width: 180px;
-    margin: 5px 0 5px 0;
-    padding-left: 5px;
-    height: 35px;
+  .add_btn {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 24px;
 
-    background-color: white;
-    border-radius: 2px;
-    box-shadow: 0 2px 2px -2px #000000;
-
-    display: flex;
-    align-items: center;
-  }
-  .add-column {
     display: flex;
     justify-content: center;
-    align-items: center;
-
-    background-color: white;
     border-radius: 360px;
-    height: 36px;
-    font-size: 26px;
-
-    padding: 10px;
-    margin-top: 20px;
-    margin-left: 20px;
-  }
-  .name {
-    padding-left: 10px;
-    width: 180px;
-    box-shadow: 0 0 2px #5a5a5a;
-    border-radius: 2px;
     background-color: #ffa726;
   }
-  .pin-creator-input-div {
-    width: 150px;
-  }
-  .hidden {
-    display: none;
-  }
-  .pin-creator-input {
-    margin-top: 10px;
-    width: 150px !important;
-  }
-  .pin-creator-input-btn {
-    box-shadow: 0 0 1px #5a5a5a;
-    background-color: #e17100;
-    text-align: center;
-    width: 180px;
-    height: 25px;
-    outline: none;
-    border: none;
+  .add_btn p::selection {
+    background: transparent;
   }
 </style>

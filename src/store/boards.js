@@ -45,6 +45,15 @@ export default {
         throw e
       }
     },
+    async applyChangesAct ({ commit, dispatch }, { boardId, columns} ) {
+      try {
+        // console.log(boardId)
+        await firebase.database().ref(`/boards/${boardId}/columns`).set(columns)
+        console.log('yep')
+      } catch (e) {
+        throw e
+      }
+    },
     async createColumn({ commit, dispatch }, { name, boardId } ) {
       try {
         await firebase.database().ref(`/boards/${boardId}/columns`).push({ name })
