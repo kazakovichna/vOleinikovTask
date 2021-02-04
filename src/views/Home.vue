@@ -62,9 +62,7 @@ export default {
     await this.$store.dispatch('fetchBoards')
     this.boards = this.$store.getters.board
     this.boardsList = this.$store.getters.boardList
-    // console.log(this.boardsList[0].name)
     this.loading = false
-
   }
 }
 </script>

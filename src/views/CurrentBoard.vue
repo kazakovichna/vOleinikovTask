@@ -81,12 +81,17 @@
           </div>
         </div>
 
-
-        <div class="col-3 btn waves-effect waves-light"
-             @click="applyChanges()"
-             style="margin-top: 10px!important;"
-        >
-          Apply Changes
+        <div class="row">
+          <div class="col-3 btn waves-effect waves-light"
+               @click="applyChanges()"
+               style="margin-top: 10px!important; margin-left: 15px;"
+          >
+            Apply Changes
+          </div>
+          <div class="col-8">
+            <span class="copy-div-ins">Send that code to people you want to invite</span>
+            <span class="copy-div">{{this.$route.params.id}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -197,7 +202,6 @@
             }
             this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
           }
-          console.log(this.allColumnsArr)
         } else {
           this.allColumnsArr = []
           this.allColumnsArrName = []
@@ -276,8 +280,42 @@
     border-radius: 360px;
     background-color: #ffa726;
   }
-
   .add_btn p::selection {
     background: transparent;
+  }
+  .copy-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Lucida Console", sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    opacity: 0.9;
+  }
+  .copy-div-ins {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: none;
+    margin: 0;
+
+    font-family: "Lucida Console", sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    opacity: 0.7;
+    text-align: right;
+  }
+  .copy-div span {
+    padding: 10px;
+    margin: 0;
+
+    box-shadow: 0 0 2px #5a5a5a;
+    background-color: #ffffff;
+  }
+  .copy-div span::selection {
+    color: white;
+    background-color: #ffa726;
   }
 </style>
