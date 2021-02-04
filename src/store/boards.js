@@ -18,11 +18,21 @@ export default {
     }
   },
   actions: {
+    async joinToBoardAct({commit, dispatch}, { secretCode }) {
+      const uid = await dispatch('getUid')
+      await firebase.database().ref(`/users/${uid}/boardList`).push({name: secretCode})
+    },
     async fetchBoards({ commit, dispatch }) {
       try {
         const uid = await dispatch('getUid')
         const userBoardList = (await firebase.database().ref(`users/${uid}/boardList`).once('value')).val()
 
+        if(userBoardList == undefined) {
+          const brd = {}
+          commit('setBoards', brd)
+          commit('setBoardList', brd)
+          return
+        }
         let userBoards = []
         for (const item of Object.values(userBoardList)) {
           const userBoard = (await firebase.database().ref(`boards/${item.name}`).once('value')).val()

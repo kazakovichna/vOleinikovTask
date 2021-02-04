@@ -30,19 +30,31 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="foot">
         <router-link to="/createBoard"
                      class="create-board waves-effect waves-light"
                      v-tooltip="'Create new board'"
         >
           <p>Create New Board</p>
         </router-link>
+        <div class="join-to-board">
+          <form @submit.prevent="joinToBoard(secretCode)">
+            <input type="text"
+                   placeholder="Enter Secret Code"
+                   v-model="secretCode"
+            >
+            <button type="submit">
+              Join
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
 
 export default {
   name: 'Home',
@@ -51,15 +63,34 @@ export default {
       title: this.$title('Bill_Name')
     }
   },
-  data () {
-    return {
+  data: () => ({
       loading: true,
       boards: null,
-      boardsList: []
+      boardsList: [],
+      secretCode: ""
+  }),
+  methods: {
+    ...mapActions([
+      'joinToBoardAct',
+      'fetchBoards'
+    ]),
+    async joinToBoard(secretCode) {
+      if(secretCode) {
+        const payload = {
+          secretCode: secretCode
+        }
+        this.loading = true
+        await this.joinToBoardAct(payload)
+        await this.fetchBoards()
+        this.boards = this.$store.getters.board
+        this.boardsList = this.$store.getters.boardList
+        this.secretCode = ''
+        this.loading = false
+      }
     }
   },
   async mounted () {
-    await this.$store.dispatch('fetchBoards')
+    await this.fetchBoards()
     this.boards = this.$store.getters.board
     this.boardsList = this.$store.getters.boardList
     this.loading = false
@@ -142,5 +173,24 @@ export default {
 .create-board p{
   margin: 0!important;
   outline: none;
+}
+.foot {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.join-to-board {
+  margin-top: 20px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.join-to-board form button {
+  width: 60%;
+  outline: none;
+  border: none;
 }
 </style>

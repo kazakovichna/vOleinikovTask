@@ -14,22 +14,32 @@
 
 
       <div class="tables-div">
-        <div class="col-3 form-inline"
-             style="margin-top: 20px"
-             v-if="allColumnsArr.length !== 0"
-        >
-          <b-form-input
-            v-model="newTask"
-            placeholder="Enter Task"
-            @keyup.enter="addPin"
+        <div class="row header-div">
+
+          <div class="col-3 form-inline"
+               style="margin-top: 20px"
+               v-if="allColumnsArr.length !== 0"
           >
-          </b-form-input>
-          <b-button
-            @click="addPin"
-            variant="primary"
-          >
-            Add
-          </b-button>
+            <b-form-input
+              v-model="newTask"
+              placeholder="Enter Task"
+              @keyup.enter="addPin"
+            >
+            </b-form-input>
+            <b-button
+              @click="addPin"
+              variant="primary"
+            >
+              Add
+            </b-button>
+          </div>
+          <div class="col-3">
+            <div class="update-div waves-effect waves-light"
+                 @click="updateBoard()"
+            >
+              <p>Update</p>
+            </div>
+          </div>
         </div>
 
 
@@ -135,8 +145,34 @@
         'fetchBoardsById',
         'applyChangesAct'
       ]),
+      async updateBoard() {
+        try {
+          this.loading = true
+          await this.fetchBoardsById(this.$route.params.id)
+          this.curBoard = this.getCurrentBoard
 
-      // Add a native mas
+          if ( Object.values(this.curBoard).length === 0 ) {
+            this.$router.push('/')
+          }
+
+          this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
+          this.allColumnsArrName.length = this.allColumnsArr.length
+
+          if (this.curBoard.columns !== undefined) {
+            for (let item = 0; item < Object.keys(this.curBoard.columns).length; item++) {
+              this.allColumnsArr[item] = []
+              if (Object.values(this.curBoard.columns)[item].pins !== undefined) {
+                this.allColumnsArr[item] = Object.values(Object.values(this.curBoard.columns)[item].pins)
+              }
+              this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
+            }
+          } else {
+            this.allColumnsArr = []
+            this.allColumnsArrName = []
+          }
+        } catch (e) {}
+        this.loading = false
+      },
       addPin () {
         if (this.allColumnsArr.length === 0) {
           this.newTask = ''
@@ -213,6 +249,26 @@
 </script>
 
 <style scoped>
+  .header-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .update-div {
+    width: 120px;
+    padding: 10px;
+    box-shadow: 0 0 2px #000000;
+    border-radius: 2px;
+
+    font-size: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .update-div p {
+    margin: 0;
+  }
   .kanban-column {
     min-height: 300px;
   }

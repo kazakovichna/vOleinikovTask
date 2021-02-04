@@ -3,7 +3,10 @@
     <nav class="navbar orange lighten-1">
       <div class="nav-wrapper">
         <div class="navbar-left">
-          <router-link href="#" to="/">
+          <router-link href="#"
+                       to="/"
+                       v-tooltip="'Homie'"
+          >
             <i class="material-icons black-text">home</i>
           </router-link>
           <span class="black-text"><b>{{date | date('datetime')}}</b></span>
