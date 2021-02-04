@@ -14,35 +14,24 @@
 
 
       <div class="tables-div">
-
-        <div class="row"
+        <div class="col-3 form-inline"
              style="margin-top: 20px"
              v-if="allColumnsArr.length !== 0"
         >
-          <div class="col-3 form-inline">
-            <b-form-input
-              v-model="newTask"
-              placeholder="Enter Task"
-              @keyup.enter="addPin"
-            >
-            </b-form-input>
-            <b-button
-              @click="addPin"
-              variant="primary"
-              class="ml-3"
-            >
-              Add
-            </b-button>
-          </div>
-          <div class="col-3 btn">
-            <button
-              class="ml-3"
-              @click="applyChanges()"
-            >
-              Apply Changes
-            </button>
-          </div>
+          <b-form-input
+            v-model="newTask"
+            placeholder="Enter Task"
+            @keyup.enter="addPin"
+          >
+          </b-form-input>
+          <b-button
+            @click="addPin"
+            variant="primary"
+          >
+            Add
+          </b-button>
         </div>
+
 
         <div class="row mt-5">
 
@@ -90,6 +79,14 @@
               </form>
             </div>
           </div>
+        </div>
+
+
+        <div class="col-3 btn waves-effect waves-light"
+             @click="applyChanges()"
+             style="margin-top: 10px!important;"
+        >
+          Apply Changes
         </div>
       </div>
     </div>
@@ -145,7 +142,6 @@
             name: this.newTask,
             id: Number(`1${this.allColumnsArr[0].length + 1}`)
           })
-          console.log(this.allColumnsArr[0])
           this.newTask = ''
         }
       },
@@ -174,7 +170,6 @@
           newColumns.push(column)
         })
 
-        // console.log(this.$route.params.id)
         const payload = {
           boardId: this.$route.params.id,
           columns: newColumns
@@ -186,7 +181,6 @@
       try {
         await this.fetchBoardsById(this.$route.params.id)
         this.curBoard = this.getCurrentBoard
-        console.log(this.$route.params.id)
 
         this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
         this.allColumnsArrName.length = this.allColumnsArr.length
@@ -213,46 +207,40 @@
   .kanban-column {
     min-height: 300px;
   }
-
+  .current-board {
+    width: 90%;
+  }
   .wrapper {
     display: flex;
     flex-direction: column;
   }
-
   .board-name {
+    margin-bottom: 10px;
     width: 30%;
-    box-shadow: 0 0 2px #5a5a5a;
-    border-radius: 2px;
-    background-color: #ffa726;
-
-    display: flex;
-    align-items: center;
-  }
-
-  .board-name p {
-    margin-left: 24px;
-    font-family: "Lucida Console", sans-serif;
-    font-size: 20px;
-  }
-
-  .board-description {
     height: 35px;
-    margin-top: 10px;
-    width: 30%;
-    box-shadow: 0 0 2px #5a5a5a;
-    border-radius: 2px;
-    background-color: #ffa726;
-
-    display: flex;
-    align-items: center;
-  }
-
-  .board-description p {
-    margin-left: 24px;
     font-family: "Lucida Console", sans-serif;
-    font-size: 16px;
+    font-size: 35px;
+    font-weight: 900;
+    opacity: 0.9;
   }
+  .board-name p, .board-description p {
+    margin: 0!important;
+  }
+  .board-description {
+    margin-bottom: 5px;
+    height: 24px;
 
+    font-family: "Lucida Console", sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    opacity: 0.7;
+  }
+  .tables-div {
+    padding: 10px;
+
+    box-shadow: 0 0 2px #000000;
+    background-color: #fbfbfb;
+  }
   .none-columns {
     margin-top: 20px;
     padding-top: 20px;

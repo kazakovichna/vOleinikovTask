@@ -27,7 +27,6 @@ export default {
         for (const item of Object.values(userBoardList)) {
           const userBoard = (await firebase.database().ref(`boards/${item.name}`).once('value')).val()
           userBoards.push(userBoard)
-          console.log(userBoards)
         }
         commit('setBoards', userBoards)
         commit('setBoardList', userBoardList)
