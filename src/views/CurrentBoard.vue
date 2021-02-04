@@ -42,7 +42,6 @@
           </div>
         </div>
 
-
         <div class="row mt-5">
 
           <div class="col-3"
@@ -61,7 +60,10 @@
                      v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
                      :key="element.id"
                 >
-                  {{ element.name }}
+                  <div>{{ element.name }}</div>
+                  <div class="list-group-item-bucket material-icons"
+                       @click="dltPin(element)"
+                  >delete_outline</div>
                 </div>
               </draggable>
             </div>
@@ -145,6 +147,12 @@
         'fetchBoardsById',
         'applyChangesAct'
       ]),
+      dltPin(el) {
+        console.log('Приветик)')
+        // console.log(this.allColumnsArr[Math.floor(el.id/10)])
+        // console.log(this.allColumnsArr[el.id[0]][el.id[1]])
+        // this.allColumnsArr[Math.floor(el.id/10)].slice(el.id % 10)
+      },
       async updateBoard() {
         try {
           this.loading = true
@@ -304,6 +312,17 @@
 
     box-shadow: 0 0 2px #000000;
     background-color: #fbfbfb;
+  }
+  .list-group-item {
+    font-size: 16px;
+    font-weight: 900;
+    font-family: "Lucida Console", sans-serif;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .list-group-item-bucket {
+    cursor: pointer;
   }
   .none-columns {
     margin-top: 20px;
