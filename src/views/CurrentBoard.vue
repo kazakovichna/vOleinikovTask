@@ -182,6 +182,10 @@
         await this.fetchBoardsById(this.$route.params.id)
         this.curBoard = this.getCurrentBoard
 
+        if ( Object.values(this.curBoard).length === 0 ) {
+          this.$router.push('/')
+        }
+
         this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
         this.allColumnsArrName.length = this.allColumnsArr.length
 
@@ -193,6 +197,7 @@
             }
             this.allColumnsArrName[item] = Object.values(this.curBoard.columns)[item].name
           }
+          console.log(this.allColumnsArr)
         } else {
           this.allColumnsArr = []
           this.allColumnsArrName = []
@@ -216,7 +221,6 @@
   }
   .board-name {
     margin-bottom: 10px;
-    width: 30%;
     height: 35px;
     font-family: "Lucida Console", sans-serif;
     font-size: 35px;

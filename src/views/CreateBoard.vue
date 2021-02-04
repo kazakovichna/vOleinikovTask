@@ -61,6 +61,7 @@ export default {
         })
         this.name = ''
         this.description = ''
+        this.$router.push('/')
       }
       catch (e) {}
     }

@@ -4,7 +4,7 @@
       <div class="nav-wrapper">
         <div class="navbar-left">
           <router-link href="#" to="/">
-            <i class="material-icons black-text">dehaze</i>
+            <i class="material-icons black-text">home</i>
           </router-link>
           <span class="black-text"><b>{{date | date('datetime')}}</b></span>
         </div>
@@ -85,5 +85,9 @@ export default {
 </script>
 
 <style scoped>
-
+.nav-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
 </style>

@@ -36,13 +36,20 @@ export default {
         throw e
       }
     },
-    async fetchBoardsById ({ commit }, id) {
-      try {
-        const currentBoard = (await firebase.database().ref(`boards/${id}`).once('value')).val()
-        commit('setCurrentBoard', currentBoard)
-      } catch (e) {
-        commit('setError', e)
-        throw e
+    async fetchBoardsById ({ dispatch, commit }, id) {
+      const uid = await dispatch('getUid')
+      const boardId = (await firebase.database().ref(`users/${uid}/boardList`).once('value')).val()
+      let isBoardFind = false
+      Object.values(boardId).forEach(item => { if( item.name === id ) { isBoardFind = true } })
+
+      if (isBoardFind) {
+        try {
+          const currentBoard = (await firebase.database().ref(`boards/${id}`).once('value')).val()
+          commit('setCurrentBoard', currentBoard)
+        } catch (e) {
+          commit('setError', e)
+          throw e
+        }
       }
     },
     async createBoard({ commit, dispatch }, { name, description }) {

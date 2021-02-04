@@ -86,7 +86,8 @@
 }
 
 .app-content.full {
-    padding-left:0
+    padding-left:0;
+    paddind: 0!important;
 }
 
 .page-title {
