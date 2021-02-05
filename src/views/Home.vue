@@ -13,7 +13,7 @@
            v-else
       >
         <div class="boards-label">
-          <p>You Boards</p>
+          <p>Your Boards</p>
         </div>
         <div class="boards-items">
           <div class="boards-item"
@@ -112,24 +112,32 @@ export default {
   opacity: 0.9;
 }
 .boards-label {
-  height: 30px;
-  margin-bottom: 5px;
+  height: 60px;
+  padding: 20px;
   font-family: "Lucida Console", sans-serif;
   font-size: 30px;
   font-weight: 900;
-  opacity: 0.8;
+  color: white;
+  background-color: #414f52;
+  box-shadow: 0 0 2px #000000;
+
+  display: flex;
+  align-items: center;
+}
+.boards-label p {
+  margin: 0!important;
 }
 .boards-items {
   width: inherit;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   flex-direction: row;
 
   box-shadow: 0 0 2px #000000;
-  background-color: #fbfbfb;
+  background-color: #b0bcbd;
 }
 .boards-item {
-  width: 600px;
+  width: 250px;
   margin: 20px;
   padding: 5px;
   cursor: pointer;
@@ -175,9 +183,11 @@ export default {
   outline: none;
 }
 .foot {
+  padding-left: 20px;
+  width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 .join-to-board {
@@ -189,7 +199,9 @@ export default {
   justify-content: center;
 }
 .join-to-board form button {
-  width: 60%;
+  font-size: 20px;
+  height: 40px;
+  width: 100%;
   outline: none;
   border: none;
 }

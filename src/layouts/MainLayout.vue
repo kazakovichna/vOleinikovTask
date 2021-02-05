@@ -68,5 +68,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .app-page {
+    background-color: #fafeff;
+  }
 </style>

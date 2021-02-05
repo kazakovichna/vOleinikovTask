@@ -1,13 +1,13 @@
 <template>
   <div class="navbar">
-    <nav class="navbar orange lighten-1">
+    <nav class="navbar orange-сolor lighten-1">
       <div class="nav-wrapper">
         <div class="navbar-left">
           <router-link href="#"
                        to="/"
                        v-tooltip="'Homie'"
           >
-            <i class="material-icons black-text">home</i>
+            <img style="width: 40px" :src="require('../../assets/images/kisspng-real-estate-house-computer-icons-business-household-icon-5b37303ebd1ef2 1.svg')" alt="">
           </router-link>
           <span class="black-text"><b>{{date | date('datetime')}}</b></span>
         </div>
@@ -15,7 +15,7 @@
         <ul class="right hide-on-small-and-down">
           <li>
             <a
-              class="dropdown-trigger black-text"
+              class="user-name dropdown-trigger black-text"
               href="#"
               data-target="dropdown"
               ref="dropdown"
@@ -93,4 +93,13 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+  .orange-сolor {
+    background-color: #b0bcbd;
+  }
+  .user-name {
+    font-size: 20px;
+    font-family: "Lucida Console", sans-serif;
+    font-weight: 900;
+    opacity: 0.8;
+  }
 </style>
