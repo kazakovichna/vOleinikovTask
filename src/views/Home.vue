@@ -100,7 +100,7 @@ export default {
 
 <style scoped>
 .boards {
-  width: inherit;
+  width: 90%;
   margin-top: 64px;
 }
 .boards-create {

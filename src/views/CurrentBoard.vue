@@ -6,17 +6,15 @@
     >
 
       <div class="board-name">
-        <p>{{ curBoard.name }}</p>
-      </div>
-      <div class="board-description">
-        <p>{{ curBoard.description }}</p>
+        <p id="boardName">{{ curBoard.name }}</p>
+        <p id="boardDes">{{ curBoard.description }}</p>
       </div>
 
 
       <div class="tables-div">
-        <div class="row header-div">
+        <div class="header-div">
 
-          <div class="col-3 form-inline"
+          <div class="create-pin p-2"
                style="margin-top: 20px"
                v-if="allColumnsArr.length !== 0"
           >
@@ -28,7 +26,6 @@
             </b-form-input>
             <b-button
               @click="addPin"
-              variant="primary"
             >
               Add
             </b-button>
@@ -48,7 +45,7 @@
                v-for="item in allColumnsArr"
                :key="allColumnsArr.indexOf(item)"
           >
-            <div class="p-2 alert alert-success">
+            <div class="p-2 column">
               <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
               <draggable
                 v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
@@ -76,25 +73,25 @@
             >
               <p>+</p>
             </div>
-            <div class="add_column_input_div"
+            <div class="create-col"
                  v-else
             >
               <form @submit.prevent="addColumn">
-                <input class="add_column_input_div"
+                <b-form-input class="add_column_input_div"
                        type="text"
                        placeholder="Enter column name"
                        v-model="columnName"
-                >
-                <button class="ml-3" type="submit">
+                ></b-form-input>
+                <b-button type="submit">
                   Add column
-                </button>
+                </b-button>
               </form>
             </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-3 btn waves-effect waves-light"
+          <div class="col-3 apply-changes waves-effect waves-light"
                @click="applyChanges()"
                style="margin-top: 10px!important; margin-left: 15px;"
           >
@@ -148,8 +145,7 @@
         'applyChangesAct'
       ]),
       dltPin(el) {
-        console.log('Приветик)')
-        // console.log(this.allColumnsArr[Math.floor(el.id/10)])
+        console.log(this.allColumnsArr[Math.floor(el.id/10)])
         // console.log(this.allColumnsArr[el.id[0]][el.id[1]])
         // this.allColumnsArr[Math.floor(el.id/10)].slice(el.id % 10)
       },
@@ -258,6 +254,7 @@
 
 <style scoped>
   .header-div {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -266,7 +263,8 @@
     width: 120px;
     padding: 10px;
     box-shadow: 0 0 2px #000000;
-    border-radius: 2px;
+    background-color: #f0f8ff;
+    border-radius: 4px;
 
     font-size: 20px;
 
@@ -277,6 +275,14 @@
   .update-div p {
     margin: 0;
   }
+  .update-div:hover {
+    background-color: #414f52;
+    color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    box-shadow: none;
+  }
   .kanban-column {
     min-height: 300px;
   }
@@ -286,40 +292,46 @@
   .wrapper {
     display: flex;
     flex-direction: column;
+    background-color: #b0bcbd;
+    box-shadow: 0 0 2px #000000;
   }
   .board-name {
-    margin-bottom: 10px;
-    height: 35px;
+    height: 60px;
+    padding: 0 20px 0 20px;
     font-family: "Lucida Console", sans-serif;
-    font-size: 35px;
     font-weight: 900;
-    opacity: 0.9;
+    background-color: #414f52;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .board-name p, .board-description p {
+  #boardName {
+    font-size: 35px;
     margin: 0!important;
   }
-  .board-description {
-    margin-bottom: 5px;
-    height: 24px;
-
-    font-family: "Lucida Console", sans-serif;
-    font-size: 24px;
-    font-weight: 900;
-    opacity: 0.7;
+  #boardDes {
+    font-size: 22px;
+    margin: 0!important;
   }
   .tables-div {
     padding: 10px;
-
-    box-shadow: 0 0 2px #000000;
-    background-color: #fbfbfb;
   }
   .list-group-item {
     font-size: 16px;
     font-weight: 900;
     font-family: "Lucida Console", sans-serif;
+    box-shadow: 0 3px 6px -3px #5a5a5a;
+    color: black;
+    cursor: pointer;
     padding: 5px;
     display: flex;
     justify-content: space-between;
+    background-color: #b0baba;
+  }
+  .list-group-item:hover {
+    background-color: #414f52;
+    color: white;
   }
   .list-group-item-bucket {
     cursor: pointer;
@@ -353,7 +365,12 @@
     display: flex;
     justify-content: center;
     border-radius: 360px;
-    background-color: #ffa726;
+    background-color: #f0f8ff;
+    box-shadow: 0 3px 6px -3px #5a5a5a;
+  }
+  .add_btn:hover {
+    background-color: #414f52;
+    color: white;
   }
   .add_btn p::selection {
     background: transparent;
@@ -389,8 +406,40 @@
     box-shadow: 0 0 2px #5a5a5a;
     background-color: #ffffff;
   }
-  .copy-div span::selection {
+  .copy-div::selection {
     color: white;
-    background-color: #ffa726;
+    background-color: #414f52;
+  }
+  .column {
+    box-shadow: 0 4px 8px -3px #5a5a5a;
+    background-color: aliceblue;
+    margin-bottom: 40px;
+  }
+  .create-pin {
+    padding: 5px;
+    box-shadow: 0 4px 8px -3px #5a5a5a;
+    background-color: aliceblue;
+  }
+  .create-col {
+    padding: 10px;
+    box-shadow: 0 4px 8px -3px #5a5a5a;
+    background-color: aliceblue;
+  }
+  .apply-changes {
+    box-shadow: 0 4px 8px -3px #5a5a5a;
+    background-color: aliceblue;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: #414f52;
+    border-width: 1px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .apply-changes:hover {
+    background-color: #414f52;
+    color: white;
+    border-color: white;
   }
 </style>
