@@ -46,7 +46,12 @@
                :key="allColumnsArr.indexOf(item)"
           >
             <div class="p-2 column">
-              <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
+              <div class="col-label">
+                <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
+                <!--<div class="list-group-item-bucket material-icons"
+                     @click="dltCol(item)"
+                >delete_outline</div>-->
+              </div>
               <draggable
                 v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
                 class="list-group kanban-column"
@@ -55,7 +60,7 @@
               >
                 <div class="list-group-item"
                      v-for="element in allColumnsArr[allColumnsArr.indexOf(item)]"
-                     :key="element.id"
+                     :key="element.name"
                 >
                   <div>{{ element.name }}</div>
                   <div class="list-group-item-bucket material-icons"
@@ -91,12 +96,12 @@
         </div>
 
         <div class="row">
-          <div class="col-3 apply-changes waves-effect waves-light"
+          <!--<div class="col-3 apply-changes waves-effect waves-light"
                @click="applyChanges()"
                style="margin-top: 10px!important; margin-left: 15px;"
           >
             Apply Changes
-          </div>
+          </div>-->
           <div class="col-8">
             <span class="copy-div-ins">Send that code to people you want to invite</span>
             <span class="copy-div">{{this.$route.params.id}}</span>
@@ -144,10 +149,25 @@
         'fetchBoardsById',
         'applyChangesAct'
       ]),
-      dltPin(el) {
-        console.log(this.allColumnsArr[Math.floor(el.id/10)])
-        // console.log(this.allColumnsArr[el.id[0]][el.id[1]])
-        // this.allColumnsArr[Math.floor(el.id/10)].slice(el.id % 10)
+      /*async dltCol(itm) {
+        console.log(this.allColumnsArr.indexOf(itm))
+        await this.applyChanges()
+
+        this.loading = true
+        console.log(this.allColumnsArr[this.allColumnsArr.indexOf(itm)])
+        await this.allColumnsArr.splice(this.allColumnsArr.indexOf(itm), 1)
+        this.loading = false
+
+        await this.applyChanges()
+      },*/
+      async dltPin(el) {
+        await this.applyChanges()
+
+        this.loading = true
+        await this.allColumnsArr[el.id.x - 1].splice([el.id.y - 1], 1)
+        this.loading = false
+
+        await this.applyChanges()
       },
       async updateBoard() {
         try {
@@ -177,7 +197,7 @@
         } catch (e) {}
         this.loading = false
       },
-      addPin () {
+      async addPin () {
         if (this.allColumnsArr.length === 0) {
           this.newTask = ''
           return
@@ -185,9 +205,14 @@
         if (this.newTask) {
           this.allColumnsArr[0].push({
             name: this.newTask,
-            id: Number(`1${this.allColumnsArr[0].length + 1}`)
+            id: {
+              x: 1,
+              y: this.allColumnsArr[0].length + 1
+            }
           })
+          // console.log(this.allColumnsArr[0][this.allColumnsArr[0].length - 1])
           this.newTask = ''
+          await this.applyChanges()
         }
       },
       addColumn () {
@@ -197,12 +222,16 @@
           this.columnName = ''
           this.columnCreator = false
         }
+        this.applyChanges()
       },
       async applyChanges () {
         this.allColumnsArr.forEach(item => {
           item.forEach(el => {
             const itemId = this.allColumnsArr.indexOf(item)
-            el.id = Number(`${itemId + 1}${this.allColumnsArr[itemId].indexOf(el) + 1}`)
+            // el.id = Number(`${itemId + 1}${this.allColumnsArr[itemId].indexOf(el) + 1}`)
+            el.id.x = itemId + 1
+            el.id.y = this.allColumnsArr[itemId].indexOf(el) + 1
+            // console.log(el.id)
           })
         })
 
@@ -253,6 +282,12 @@
 </script>
 
 <style scoped>
+  .col-label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
   .header-div {
     width: 100%;
     display: flex;
