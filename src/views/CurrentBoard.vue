@@ -48,9 +48,9 @@
             <div class="p-2 column">
               <div class="col-label">
                 <h3>{{allColumnsArrName[allColumnsArr.indexOf(item)]}}</h3>
-                <!--<div class="list-group-item-bucket material-icons"
+                <div class="list-group-item-bucket material-icons"
                      @click="dltCol(item)"
-                >delete_outline</div>-->
+                >delete_outline</div>
               </div>
               <draggable
                 v-model="allColumnsArr[allColumnsArr.indexOf(item)]"
@@ -96,12 +96,12 @@
         </div>
 
         <div class="row">
-          <!--<div class="col-3 apply-changes waves-effect waves-light"
+          <div class="col-3 apply-changes waves-effect waves-light"
                @click="applyChanges()"
                style="margin-top: 10px!important; margin-left: 15px;"
           >
             Apply Changes
-          </div>-->
+          </div>
           <div class="col-8">
             <span class="copy-div-ins">Send that code to people you want to invite</span>
             <span class="copy-div">{{this.$route.params.id}}</span>
@@ -149,17 +149,20 @@
         'fetchBoardsById',
         'applyChangesAct'
       ]),
-      /*async dltCol(itm) {
+      async dltCol(itm) {
         console.log(this.allColumnsArr.indexOf(itm))
         await this.applyChanges()
 
         this.loading = true
-        console.log(this.allColumnsArr[this.allColumnsArr.indexOf(itm)])
+        // console.log(this.allColumnsArrName[this.allColumnsArr.indexOf(itm)])
+        await this.allColumnsArrName.splice(this.allColumnsArr.indexOf(itm), 1)
+        // console.log(this.allColumnsArr[this.allColumnsArr.indexOf(itm)])
         await this.allColumnsArr.splice(this.allColumnsArr.indexOf(itm), 1)
+        // console.log(this.allColumnsArr[this.allColumnsArr.indexOf(itm)])
         this.loading = false
 
         await this.applyChanges()
-      },*/
+      },
       async dltPin(el) {
         await this.applyChanges()
 
@@ -171,6 +174,7 @@
       },
       async updateBoard() {
         try {
+          // await this.applyChanges()
           this.loading = true
           await this.fetchBoardsById(this.$route.params.id)
           this.curBoard = this.getCurrentBoard
@@ -262,6 +266,8 @@
 
         this.allColumnsArr.length = Object.keys(this.curBoard.columns).length
         this.allColumnsArrName.length = this.allColumnsArr.length
+
+        console.log(this.curBoard.columns)
 
         if (this.curBoard.columns !== undefined) {
           for (let item = 0; item < Object.keys(this.curBoard.columns).length; item++) {
